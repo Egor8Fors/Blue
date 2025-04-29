@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Синій птах</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(145deg, #1e1b4b, #4c1d95);
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            width: 1920px;
+            margin: 0 auto;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+        .nav-menu {
+            transition: transform 0.5s ease-in-out;
+            backdrop-filter: blur(12px);
+            background: rgba(30, 27, 75, 0.85);
+            border-radius: 7px;
+        }
+        .nav-menu.hidden {
+            transform: translateY(-120%);
+        }
+        .section {
+            opacity: 0;
+            transform: translateY(100px);
+            transition: opacity 1.2s ease, transform 1.2s ease;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .magic-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #60a5fa, transparent);
+            border-radius: 50%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .parallax {
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            min-height: 600px;
+        }
+        .glow-card {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.6s;
+        }
+        .glow-card:hover::before {
+            left: 100%;
+        }
+        .glow-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        .interactive-text {
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+        .interactive-text:hover {
+            color: #facc15;
+        }
+        .wave-bg {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#312e81" fill-opacity="0.8" d="M0,192L48,186.7C96,181,192,171,288,170.7C384,171,480,181,576,192C672,203,768,213,864,202.7C960,192,1056,160,1152,149.3C1248,139,1344,149,1392,154.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        @media screen and (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed top-6 left-6 z-50">
+        <button id="nav-toggle" class="bg-indigo-800 hover:bg-indigo-900 text-white p-4 rounded-full focus:outline-none shadow-lg">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+        <nav id="nav-menu" class="nav-menu hidden absolute top-16 left-0 p-8 rounded-xl shadow-2xl">
+            <ul class="space-y-4">
+                <li><a href="#home" class="nav-link text-xl hover:text-yellow-400">Головна</a></li>
+                <li><a href="#about" class="nav-link text-xl hover:text-yellow-400">Про п'єсу</a></li>
+                <li><a href="#characters" class="nav-link text-xl hover:text-yellow-400">Герої</a></li>
+                <li><a href="#themes" class="nav-link text-xl hover:text-yellow-400">Теми</a></li>
+                <li><a href="#gallery" class="nav-link text-xl hover:text-yellow-400">Галерея</a></li>
+                <li><a href="#quotes" class="nav-link text-xl hover:text-yellow-400">Цитати</a></li>
+            </ul>
+        </nav>
+    </div>
+    <section id="home" class="section min-h-screen flex items-center justify-center text-center relative wave-bg">
+        <div class="relative z-10">
+            <h1 class="text-8xl font-bold animate-pulse tracking-tight">Синій птах</h1>
+            <p class="text-3xl mt-8 max-w-2xl mx-auto">Відправтеся в космічний тур за щастям та відкрийте всі таємниці Всесвіту!</p>
+            <a href="#about" class="explore-btn mt-10 inline-block bg-yellow-400 text-indigo-900 px-10 py-5 rounded-full hover:bg-yellow-500 text-2xl font-semibold shadow-lg">Дослідити</a>
+        </div>
+        <div id="particle-container" class="absolute inset-0 pointer-events-none"></div>
+    </section>
+    <section id="about" class="section py-32 px-12 parallax" style="background-image: url('#11111111111')">
+        <h2 class="text-6xl font-bold text-center mb-16">Про п'єсу «Синій птах»</h2>
+        <div class="max-w-6xl mx-auto space-y-10 text-xl">
+            <p class="interactive-text">
+                <strong>Синій птах</strong> — шедевр бельгійського драматурга Моріса Метерлінка, створений у 1905 році та вперше поставлений у 1908 році в МХТ(Московському художньому університеті). Ця філософська казка в шести актах розповідає про Тільтіля та Мітіль, брата і сестру, які за волею феї Берилюни вирушають на пошуки Синього птаха — <strong>символу щастя.</strong> </p>
+            <p class="interactive-text">
+            <strong>П'єса</strong> — це не просто історія для дітей, а глибоке розмірковування про сенс життя. Герої подорожують фантастичними світами — <strong>Країною Спогадів, садом Блаженств, Царством Майбутнього</strong>, зустрічають ожилі предметиі розуміють, що щастя часто приховане в простих речах навколо нас. Метерлінк, удостоєний Нобелівської премії в 1911 році, створив вічний твір, який надихає і сьогодні.            </p>
+            <p class="interactive-text">
+            <strong>Цей сайт</strong> — твої двері в світ <strong>Синього птаха</strong>. Досліджуй персонажів, теми та символи, насолоджуйся та надихайся магією цієї маленької роботи!            </p>
+        </div>
+    </section>
+    <section id="characters" class="section py-32 px-12 bg-indigo-950 wave-bg">
+        <h2 class="text-6xl font-bold text-center mb-16">Персонажі</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
+            <div class="glow-card bg-indigo-800 rounded-xl overflow-hidden">
+                <div class="w-full h-80 bg-gray-600 flex items-center justify-center">
+                    <img src="1.jpg.png" alt="Тильтиль" class="w-full h-80 object-cover">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold">Тільтіль</h3>
+                    <p class="mt-4">Хоробрий хлопчик, який веде сестру на пошуки Синього Птаха. Наївний, але добрий і чесний малий.</p>
+                </div>
+            </div>
+            <div class="glow-card bg-indigo-800 rounded-xl overflow-hidden">
+                <div class="w-full h-80 bg-gray-600 flex items-center justify-center">
+                    <img src="2.png" alt="Мітіль" class="w-full h-80 object-cover">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold">Мітіль</h3>
+                    <p class="mt-4">Допитлива і мила, трохи боязка сестра Тільтіля, спутниця в їхній чарівній пригоді.</p>
+                </div>
+            </div>
+            <div class="glow-card bg-indigo-800 rounded-xl overflow-hidden">
+                <div class="w-full h-80 bg-gray-600 flex items-center justify-center">
+                    <img src="3.png" alt="Берилюна" class="w-full h-80 object-cover">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold">Берилюна</h3>
+                    <p class="mt-4">Добра фея, яка відправила дітей у подорож за щастям.</p>
+                </div>
+            </div>
+            <div class="glow-card bg-indigo-800 rounded-xl overflow-hidden">
+                <div class="w-full h-80 bg-gray-600 flex items-center justify-center">
+                    <img src="6.png" alt="Пес Тіло" class="w-full h-80 object-cover">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold">Пес Тіло</h3>
+                    <p class="mt-4">Вірний і відданий товариш.</p>
+                </div>
+            </div>
+            <div class="glow-card bg-indigo-800 rounded-xl overflow-hidden">
+                <div class="w-full h-80 bg-gray-600 flex items-center justify-center">
+                    <img src="5.png" alt="Кіт" class="w-full h-80 object-cover">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold">Кішка Тілетта</h3>
+                    <p class="mt-4">Хитре і підступне створіння, що плете інтриги проти героїв.</p>
+                </div>
+            </div>
+            <div class="glow-card bg-indigo-800 rounded-xl overflow-hidden">
+                <div class="w-full h-80 bg-gray-600 flex items-center justify-center">
+                    <img src="4.png" alt="Хліб" class="w-full h-80 object-cover">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold">Хліб</h3>
+                    <p class="mt-4">Веселий коровай із добродушною вдачею, що додає гумору в подорожі.</p>
+                    </div>
+            </div>
+        </div>
+    </section>
+    <section id="themes" class="section py-32 px-12 parallax" style="background-image: url('')">
+        <h2 class="text-6xl font-bold text-center mb-16">Теми і символізм</h2>
+        <div class="max-w-6xl mx-auto space-y-10 text-xl">
+            <p class="interactive-text">
+                <em><strong>Синій Птах</em></strong> — це символ пошуків щастя. Саме птиця символізує невловиме щастя, яке, як виявляється, часто приховане у повсякденності. Метерлінк навчає нас бачити красу в простому.
+            </p>
+            <p class="interactive-text">
+                П'єса зачіпає теми <strong>хоробрості</strong>, коли діти стикаються з небезпеками у магічних світах; <strong>самопізнання</strong>, через їхні відкриття про себе; і <strong>єдності життя</strong>, показаної через оживлені предмети, такі як Вода або Молоко. Історія також розмірковує про пам'ять, смертність і надію на майбутнє.
+            </p>
+            <p class="interactive-text">
+                Символізм і поетичні діалоги створюють мрійливу атмосферу, яка робить твір <em>"Синій Птах"</em> унікальним та вічним.
+            </p>
+                
+        </div>
+    </section>
+    <section id="gallery" class="section py-32 px-12 bg-indigo-950 wave-bg">
+        <h2 class="text-6xl font-bold text-center mb-16">Галерея</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
+            <div class="glow-card rounded-xl overflow-hidden">
+                <div class="w-full h-96 bg-gray-600 flex items-center justify-center">
+                    <img src="7.png" alt="Тильтиль" class="w-full h-80 object-cover">
+                    </div>
+                <p class="text-center mt-4 text-2xl">Тільтіль и Мітіль</p>
+            </div>
+            <div class="glow-card rounded-xl overflow-hidden">
+                <div class="w-full h-96 bg-gray-600 flex items-center justify-center">
+                    <img src="8.jpg" alt="Тильтиль" class="w-full h-80 object-cover">
+                </div>
+                <p class="text-center mt-4 text-2xl">Синій Птах</p>
+            </div>
+            <div class="glow-card rounded-xl overflow-hidden">
+                <div class="w-full h-96 bg-gray-600 flex items-center justify-center">
+                    <img src="9.png" alt="Царство Майбутнього" class="w-full h-80 object-cover">
+                </div>
+                <p class="text-center mt-4 text-2xl">Царство Майбутнього</p>
+            </div>
+            <div class="glow-card rounded-xl overflow-hidden">
+                <div class="w-full h-96 bg-gray-600 flex items-center justify-center">
+                    <img src="11.png" alt="сади Блаженст" class="w-full h-80 object-cover">                </div>
+                <p class="text-center mt-4 text-2xl">Сади Блаженств</p>
+            </div>
+            <div class="glow-card rounded-xl overflow-hidden">
+                <div class="w-full h-96 bg-gray-600 flex items-center justify-center">
+                    <img src="10.png" alt="Країна Спогодів" class="w-full h-80 object-cover">
+                </div>
+                <p class="text-center mt-4 text-2xl">Країна Спогадів</p>
+            </div>
+            <div class="glow-card rounded-xl overflow-hidden">
+                <div class="w-full h-96 bg-gray-600 flex items-center justify-center">
+                    <img src="12.png" alt="Птиці снобачення" class="w-full h-80 object-cover">
+                </div>
+                <p class="text-center mt-4 text-2xl">Птиці снобачення</p>
+            </div>
+        </div>
+    </section>
+    <section id="quotes" class="section py-32 px-12 bg-indigo-900">
+        <h2 class="text-6xl font-bold text-center mb-16">Надихаючі цитати</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl mx-auto">
+            <div class="glow-card bg-indigo-800 p-8 rounded-xl">
+                <p class="text-xl italic">«Il faut être prudent, mais pas trop… Le bonheur, c’est de chercher le bonheur…»</p>
+                <p class="text-xl italic" style="color: rgba(255, 255, 255, 0.7);">
+                    (Треба бути обережним, але не надто... Щастя — це шукати щастя...)
+                  </p>                  
+                <p class="text-right mt-6 text-lg">— Фея Берилюна</p>
+            </div>
+            <div class="glow-card bg-indigo-800 p-8 rounded-xl">
+                <p class="text-xl italic">«On ne voit pas le bonheur quand il est trop près de nous…»</p>
+                <p class="text-xl italic" style="color: rgba(255, 255, 255, 0.7);">
+                    (Ми не бачимо щастя, коли воно надто близько до нас…)
+                <p class="text-right mt-6 text-lg">— Автор</p>
+            </div>
+            <div class="glow-card bg-indigo-800 p-8 rounded-xl">
+                <p class="text-xl italic">«Il n’y a pas de plus grand malheur que de ne pas savoir être heureux.»</p>
+                <p class="text-xl italic" style="color: rgba(255, 255, 255, 0.7);">
+                    (Немає більшого нещастя, ніж не вміти бути щасливим.)
+                <p class="text-right mt-6 text-lg">— Душа Світла</p>
+            </div>
+            <div class="glow-card bg-indigo-800 p-8 rounded-xl">
+                <p class="text-xl italic">«Si nous ne l’avons pas trouvé, c’est qu’il est encore plus loin… ou qu’il est tout près de nous.»</p>
+                <p class="text-xl italic" style="color: rgba(255, 255, 255, 0.7);">
+                    (Якщо ми не знайшли його(щастя), значить, воно ще далі… або воно зовсім поруч з нами.)
+                <p class="text-right mt-6 text-lg">— Тільтіль</p>
+            </div>
+        </div>
+    </section>
+    <footer class="py-16 bg-indigo-950 text-center wave-bg">
+        <p class="text-xl">© 2008 «Синій Птах». Натхненний магією Моріса Метерлінка.</p>
+        <p class="mt-6 text-lg">Зробленно з любовью для тих, хто вірит у дива.</p>
+    </footer>
+    <script>
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('hidden');
+            anime({
+                targets: navMenu,
+                translateY: navMenu.classList.contains('hidden') ? -120 : 0,
+                easing: 'easeInOutQuad',
+                duration: 500
+            });
+        });
+        document.addEventListener('click', (e) => {
+            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                navMenu.classList.add('hidden');
+                anime({
+                    targets: navMenu,
+                    translateY: -120,
+                    easing: 'easeInOutQuad',
+                    duration: 500
+                });
+            }
+        });
+        const sections = document.querySelectorAll('.section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    anime({
+                        targets: entry.target,
+                        opacity: [0, 1],
+                        translateY: [100, 0],
+                        easing: 'easeOutCubic',
+                        duration: 1200
+                    });
+                }
+            });
+        }, { threshold: 0.1 });
+        sections.forEach(section => observer.observe(section));
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'magic-particle';
+            document.getElementById('particle-container').appendChild(particle);
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            anime({
+                targets: particle,
+                translateX: (Math.random() - 0.5) * 200,
+                translateY: (Math.random() - 0.5) * 200,
+                scale: [1, 0],
+                opacity: [1, 0],
+                duration: 200,
+                easing: 'easeOutExpo',
+                complete: () => particle.remove()
+            });
+        }
+        document.addEventListener('click', (e) => {
+            for (let i = 0; i < 10; i++) {
+                createParticle(e.clientX, e.clientY);
+            }
+        });
+        setInterval(() => {
+            createParticle(Math.random() * 1920, Math.random() * 1080);
+        }, 300);
+        document.querySelectorAll('.nav-link, .explore-btn').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);                
+                if (targetElement) {
+                    navMenu.classList.add('hidden');
+                    anime({
+                        targets: navMenu,
+                        translateY: -120,
+                        easing: 'easeInOutQuad',
+                        duration: 500
+                    });
+                    anime({
+                        targets: document.documentElement,
+                        scrollTop: targetElement.offsetTop - 20,
+                        duration: 100,
+                        easing: 'easeInOutQuad'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
